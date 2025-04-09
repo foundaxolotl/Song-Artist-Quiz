@@ -64,13 +64,14 @@ class StartQuiz:
                                   command=self.check_rounds)
         self.play_button.grid(row=1, column=0)
 
+        # Create a list for the background colour
         background_list = [
-            [self.start_frame],
-            [self.entry_area_frame]
+            self.start_frame,
+            self.entry_area_frame
         ]
 
-        for item in enumerate(background_list):
-            bg="#D2C4FF"
+        for widget in background_list:
+            widget.config(bg="#D2C4FF")
 
     def check_rounds(self):
         """
