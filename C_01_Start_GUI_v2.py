@@ -24,13 +24,12 @@ class StartQuiz:
                         "In the box below please enter the number of rounds you would "
                         "like to play to begin")
 
-        # choose_string = "Oops - Please choose a whole number more than zero."
         choose_string = "How many rounds of questions do you want to play?"
 
         # Title string
         title_string = "Song / Artist Quiz 🎵"
 
-        # List of labels to be made
+        # List of labels
         start_labels_list = [
             [title_string, ("Arial", "18", "bold"), "#D2C4FF", "#000000"],
             [intro_string, ("Arial", "11"), "#D2C4FF", "#000000"],
@@ -93,7 +92,7 @@ class StartQuiz:
         try:
             rounds_wanted = int(rounds_wanted)
             if rounds_wanted > 0:
-                # temporary success message, replace with call to PlayGame class
+                # temporary success message, replace with call to PlayQuiz class
                 self.choose_label.config(text=f"You have chosen to play {rounds_wanted} rounds.")
             else:
                 has_errors = "yes"
@@ -107,6 +106,30 @@ class StartQuiz:
                                      font=("Arial", "10", "bold"))
             self.num_rounds_entry.config(bg="#F4CCCC")
             self.num_rounds_entry.delete(0, END)
+
+    class Play:
+        """
+        The main interface for the quiz
+        """
+
+        def __int__(self, round_count):
+            self.play_box = Toplevel()
+
+            self.quiz_frame = Frame(self.play_box)
+            self.quiz_frame.grid(padx=10, pady=10)
+            self.quiz_heading_label = Label(self.quiz_frame, text=f"Round 0 / {round_count}",
+                                            font=("Arial", "16", "bold"))
+            self.quiz_heading_label.grid(row=0)
+
+            self.end_quiz_button = Button(self.quiz_frame, text="End Quiz",
+                                          font=("Arial", "16", "bold"), fg="#FFFFFF", bg="#841F3F", width=10,
+                                          command=self.close_quiz)
+            self.end_quiz_button.grid(row=1)
+
+        def close_quiz(self):
+            # allows quiz to close for a new game
+            root.deiconify()
+            self.play_box.destroy()
 
 
 # main routine
