@@ -21,18 +21,16 @@ def get_round_artists():
     Choose four colours from larger lists ensuring that the artists are all different
     """
 
-    all_artist_list = get_round_artists()
+    all_artist_list = get_songs()
 
     song_artist_year = []
-    songs_titles = []
     artist_names = []
-    release_years = []
 
     # loop until we have four artists...
     while len(song_artist_year) < 4:
         potential_artist = random.choice(all_artist_list)
 
-        # Get the score and check it's not a duplicate
+        # Get the points_score and check it's not a duplicate
         if potential_artist[1] not in artist_names:
             song_artist_year.append(potential_artist)
 
@@ -77,6 +75,8 @@ class Play:
     """
 
     def __init__(self, check_rounds):
+        
+        self.points_points_score = IntVar()
 
         self.rounds_played = IntVar()
         self.rounds_played.set(0)
@@ -86,6 +86,8 @@ class Play:
 
         # Artist names list
         self.round_artist_list = []
+        self.song_titles = []
+        self.points_score_list = []
 
         self.play_box = Toplevel()
 
@@ -135,17 +137,7 @@ class Play:
                                     column=item % 2,
                                     padx=5, pady=5)
 
-        # create  four buttons for the year names
-        for item in range(0, 4):
-            self.year_button = Button(self.year_frame, font=("Arial", "12"),
-                                      text="Year Name", width=15, command=partial(self.round_results, item),
-                                      bg="#684680", fg="#FFFFFF")
-            self.year_button.grid(row=item // 2,
-                                  column=item % 2,
-                                  padx=5, pady=5)
-
             self.artist_button_ref.append(self.artist_button)
-            self.year_button_ref.append(self.year_button)
 
         # Frame to hold hints and stats buttons
         self.hints_stats_frame = Frame(self.quiz_frame)
@@ -225,20 +217,19 @@ class Play:
         score = int(self.round_artist_list[user_choice][1])
 
         # alternate way to get button name. Good for if button have been scrambled.
-        colour_name = self.artist_button_ref[user_choice].cget('text')
+        artist_names = self.artist_button_ref[user_choice].cget('text')
 
         # retrieve target score and compare with user score to find round result
-        target = self.target_score.get()
-        self.all_medians_list.append(target)
+        target = self.points_points_score.get()
 
         if score >= target:
-            result_text = f"Success! {colour_name} earned you {score} points"
+            result_text = f"Success! {artist_names} earned you {score} points"
             result_bg = "#82B366"
-            self.all_scores_list.append(score)
+            self.points_score_list.append(score)
         else:
-            result_text = f"Oops {colour_name} ({score}) is less than the target."
+            result_text = f"Oops {artist_names} ({score}) is less than the target."
             result_bg = "#F8CECC"
-            self.all_scores_list.append(0)
+            self.points_score_list.append(0)
 
         self.results_label.config(text=result_text, bg=result_bg)
 
