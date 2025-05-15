@@ -76,7 +76,7 @@ class Play:
 
     def __init__(self, check_rounds):
         
-        self.points_points_score = IntVar()
+        self.points_score = IntVar()
 
         self.rounds_played = IntVar()
         self.rounds_played.set(0)
@@ -121,16 +121,13 @@ class Play:
         # set up artist and year buttons...
         self.artist_frame = Frame(self.quiz_frame)
         self.artist_frame.grid(row=3)
-        self.year_frame = Frame(self.quiz_frame)
-        self.year_frame.grid(row=5)
 
         self.artist_button_ref = []
-        self.year_button_ref = []
-        self.button_songs_list = []
+        self.button_artists_list = []
 
         # create four buttons for the artist names in a 2 x 2 grid
         for item in range(0, 4):
-            self.artist_button = Button(self.artist_frame, font=("Arial", "12"),
+            self.artist_button = Button(self.artist_frame, font=("Arial", "10"),
                                         text="Artist Name", width=15, command=partial(self.round_results, item),
                                         bg="#684680", fg="#FFFFFF")
             self.artist_button.grid(row=item // 2,
@@ -170,7 +167,6 @@ class Play:
         background_list = [
             self.quiz_frame,
             self.artist_frame,
-            self.year_frame,
             self.hints_stats_frame,
 
         ]
@@ -200,8 +196,7 @@ class Play:
         self.heading_label.config(text=f"Round {rounds_played} / {rounds_wanted}")
 
         for count, item in enumerate(self.artist_button_ref):
-            item.config(fg=self.round_artist_list[count][2], bg=self.round_artist_list[count][0],
-                        text=self.round_artist_list[count][0], state=NORMAL)
+            item.config(text=self.round_artist_list[count][1], state=NORMAL)
 
         self.next_button.config(state=DISABLED)
 
@@ -213,14 +208,11 @@ class Play:
         and adds to results to stats list
         """
 
-        # Get user score and colour based on button press...
-        score = int(self.round_artist_list[user_choice][1])
-
         # alternate way to get button name. Good for if button have been scrambled.
         artist_names = self.artist_button_ref[user_choice].cget('text')
 
         # retrieve target score and compare with user score to find round result
-        target = self.points_points_score.get()
+        target = self.points_score.get()
 
         if score >= target:
             result_text = f"Success! {artist_names} earned you {score} points"
