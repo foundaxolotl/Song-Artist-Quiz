@@ -84,7 +84,7 @@ class Play:
 
         # Artist names list
         self.round_artist_list = []
-        self.correct_index = None
+        self.correct_item = None
 
         self.play_box = Toplevel()
         self.quiz_frame = Frame(self.play_box)
@@ -188,8 +188,8 @@ class Play:
         self.round_artist_list = get_round_artists()
 
         # Get the correct artist from one of the four
-        self.correct_index = random.randint(0, 3)
-        correct_artist = self.round_artist_list[self.correct_index]
+        self.correct_item = random.randint(0, 3)
+        correct_artist = self.round_artist_list[self.correct_item]
 
         # Displays Song above artist options
         self.song_title_label.config(text=correct_artist[1])
@@ -210,9 +210,9 @@ class Play:
 
         # alternate way to get button name.
         selected_artist = self.artist_button_ref[user_choice].cget('text')
-        correct_artist = self.round_artist_list[self.correct_index][0]
+        correct_artist = self.round_artist_list[self.correct_item][0]
 
-        if user_choice == self.correct_index:
+        if user_choice == self.correct_item:
             self.points_score.set(self.points_score.get() + 3)
             result_text = f" Correct! {selected_artist} wrote the song. (+3 points)"
             result_bg = "#82B366"
