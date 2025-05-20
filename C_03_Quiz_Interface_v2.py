@@ -18,25 +18,24 @@ def get_songs():
 
 def get_round_artists():
     """
-    Choose four colours from larger lists ensuring that the artists are all different
+    Choose four songs from the CSV ensuring the artists are all different.
+    Returns a list of 4 items: [artist, song, year]
     """
 
     all_artist_list = get_songs()
 
-    song_artist_year = []
-    artist_names = []
-    song_names = []
+    selected_songs = []
+    artist_names = set()
 
-    # loop until we have four artists...
-    while len(artist_names) < 4:
-        potential_artist = random.choice(all_artist_list)
-        artist = potential_artist[0]
+    while len(selected_songs) < 4:
+        potential_song = random.choice(all_artist_list)
+        artist = potential_song[0]
 
         if artist not in artist_names:
-            artist_names.append(artist)
-            song_names.append(potential_artist)
+            artist_names.add(artist)
+            selected_songs.append(potential_song)
 
-    return song_artist_year
+    return selected_songs
 
 
 class StartQuiz:
@@ -196,7 +195,7 @@ class Play:
         self.song_title_label.config(text=correct_artist[1])
 
         for item, button in enumerate(self.artist_button_ref):
-            button.config(text=self.round_artist_list[item][1], state=NORMAL)
+            button.config(text=self.round_artist_list[item][0], state=NORMAL)
 
         self.results_label.config(text="", bg="#FFF8C1")
         self.next_button.config(state=DISABLED)
