@@ -217,7 +217,7 @@ class Play:
             result_text = f" Correct! {selected_artist} wrote the song. (+3 points)"
             result_bg = "#82B366"
         else:
-            result_text = f" Wrong! {selected_artist} didn't write it.\nCorrect answer: {correct_artist}"
+            result_text = f" Wrong! {selected_artist} didn't write it.\n {correct_artist} did."
             result_bg = "#F8CECC"
 
         self.results_label.config(text=result_text, bg=result_bg)
