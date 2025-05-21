@@ -23,15 +23,12 @@ def get_round_artists():
     """
 
     all_artist_list = get_songs()
-
     selected_songs = []
     artist_names = set()
-    year_names = set()
 
     while len(selected_songs) < 4:
         potential_song = random.choice(all_artist_list)
         artist = potential_song[0]
-        year = potential_song[2]
 
         if artist not in artist_names:
             artist_names.add(artist)
@@ -75,14 +72,9 @@ class Play:
 
     def __init__(self, check_rounds):
 
-        self.points_score = IntVar()
-        self.points_score.set(0)
-
-        self.rounds_played = IntVar()
-        self.rounds_played.set(0)
-
-        self.rounds_wanted = IntVar()
-        self.rounds_wanted.set(check_rounds)
+        self.points_score = IntVar(value=0)
+        self.rounds_played = IntVar(value=0)
+        self.rounds_wanted = IntVar(value=check_rounds)
 
         # Artist names list
         self.round_artist_list = []
@@ -100,7 +92,8 @@ class Play:
             ["Round # of #", ("Arial", "16", "bold"), "#D2C4FF", 0],
             ["Which artist was the song below written by?", body_font, "#FFF2CC", 1],
             ["                 Song Name                ", body_font, "#E1D5E7", 2],
-            ["Which year was the song released?", ("Arial", "12"), "#FFF8C1", 4]
+            ["======", ("Arial", "10"), "#FFF8C1", 4],
+            ["Which year was the song written?", body_font, "#FFF2CC", 5]
         ]
 
         self.play_labels_ref = []
@@ -115,31 +108,31 @@ class Play:
         self.target_label = self.play_labels_ref[1]
         self.song_title_label = self.play_labels_ref[2]
         self.results_label = self.play_labels_ref[3]
-        self.year_title_label = self.play_labels_ref[4]
+        self.year_title_label = self.play_labels_ref[3]
 
         # set up artist buttons and frames...
         self.artist_frame = Frame(self.quiz_frame)
         self.artist_frame.grid(row=3)
         self.artist_button_ref = []
 
-        # Year button and frames
-        self.year_frame = Frame(self.quiz_frame)
-        self.year_frame.grid(row=5)
-        self.year_button_ref = []
-
         # create four buttons for the artist names in a 2 x 2 grid
         for item in range(0, 4):
             self.artist_button = Button(self.artist_frame, font=("Arial", "11"),
-                                        text="Artist Name", width=15, command=partial(self.round_results, item),
+                                        text="Artist Name", width=17, command=partial(self.round_results_artists, item),
                                         bg="#684680", fg="#FFFFFF")
             self.artist_button.grid(row=item // 2, column=item % 2, padx=5, pady=5)
 
             self.artist_button_ref.append(self.artist_button)
 
+        # Year button and frames
+        self.year_frame = Frame(self.quiz_frame)
+        self.year_frame.grid(row=5)
+        self.year_button_ref = []
+
         # create  four buttons for the year names
         for item in range(0, 4):
             self.year_button = Button(self.year_frame, font=("Arial", "11"),
-                                      text="Year Name", width=15, command=partial(self.round_results, item),
+                                      text="Year Name", width=17, command=partial(self.round_results_year, item),
                                       bg="#684680", fg="#FFFFFF")
             self.year_button.grid(row=item // 2, column=item % 2, padx=5, pady=5)
 
@@ -204,27 +197,21 @@ class Play:
 
         # Retrieves round artists
         self.round_artist_list = get_round_artists()
-        self.round_year_list = get_round_artists()
-
-        # Get the correct artist from one of the four
         self.correct_index = random.randint(0, 3)
-        correct_artist = self.round_artist_list[self.correct_index]
-        correct_year = self.round_year_list[self.correct_index]
+        correct_song = self.round_artist_list[self.correct_index]
 
-        # Displays Song above artist options
-        self.song_title_label.config(text=correct_artist[1])
-        self.year_title_label.config(text=correct_year[2])
+        # Show song name and correct year
+        self.song_title_label.config(text=correct_song[1])
+        self.year_title_label.config(text="Which year was the song released?")
 
-        for item, button in enumerate(self.artist_button_ref):
-            button.config(text=self.round_artist_list[item][0], state=NORMAL)
-
-        for item, button in enumerate(self.year_button_ref):
-            button.config(text=self.round_year_list)[item][2], state=NORMAL
+        for item in range(4):
+            self.artist_button_ref[item].config(text=self.round_artist_list[item][0], state=NORMAL)
+            self.year_button_ref[item].config(text=self.round_artist_list[item][2], state=NORMAL)
 
         self.results_label.config(text="", bg="#FFF8C1")
         self.next_button.config(state=DISABLED)
 
-    def round_results(self, user_choice):
+    def round_results_artists(self, user_choice):
         """
 
         Retrieves which button was pushed (index 0 - 3), retrieves
@@ -235,7 +222,6 @@ class Play:
         # alternate way to get button name.
         selected_artist = self.artist_button_ref[user_choice].cget('text')
         correct_artist = self.round_artist_list[self.correct_index][0]
-        correct_year = self.round_year_list[self.correct_index][2]
 
         if user_choice == self.correct_index:
             self.points_score.set(self.points_score.get() + 3)
@@ -256,6 +242,22 @@ class Play:
         if self.rounds_played.get() == self.rounds_wanted.get():
             self.next_button.config(state=DISABLED, text="Game Over")
             self.end_game_button.config(text="Play Again", bg="#006600")
+
+    def round_results_year(self, user_choice):
+        selected_year = self.year_button_ref[user_choice].cget('text')
+        correct_year = self.round_artist_list[self.correct_index][2]
+
+        if selected_year == correct_year:
+            self.points_score.set(self.points_score.get() + 2)
+            result_text = f"Correct! The song was released in {correct_year}. (+2 points)"
+            result_bg = "#C9DAF8"
+        else:
+            result_text = f"Wrong year! You chose {selected_year}.\nCorrect: {correct_year}"
+            result_bg = "#F4CCCC"
+
+        self.results_label.config(text=result_text, bg=result_bg)
+        for button in self.year_button_ref:
+            button.config(state=DISABLED)
 
     def close_play(self):
         # closes quiz for a new one to start
