@@ -54,13 +54,13 @@ class StartQuiz:
         self.start_frame.grid()
 
         # Make play button
-        self.play_button = Button(self.start_frame, font=("Arial", "16", "bold"),
+        self.play_button = Button(self.start_frame, font=("Arial", 16, "bold"),
                                   fg="#FFFFFF", bg="#841F3F", text="Play", width=10,
                                   command=self.check_rounds)
         self.play_button.grid(row=0, column=1)
 
     def check_rounds(self):
-        Play(5)
+        Play(10)
         # hides root window
         root.withdraw()
 
@@ -75,6 +75,10 @@ class Play:
         self.points_score = IntVar(value=0)
         self.rounds_played = IntVar(value=0)
         self.rounds_wanted = IntVar(value=check_rounds)
+
+        self.all_songs = get_songs()
+        random.shuffle(self.all_songs)
+        self.selected_song = 0
 
         # Gets artist list and the correct artist
         self.round_artist_list = []
@@ -116,8 +120,8 @@ class Play:
         self.artist_button_ref = []
 
         # create four buttons for the artist names in a grid
-        for item in range(0, 4):
-            self.artist_button = Button(self.artist_frame, font=("Arial", "11"),
+        for item in range(4):
+            self.artist_button = Button(self.artist_frame, font=("Arial", 11),
                                         text="Artist Name", width=17,
                                         command=partial(self.round_results_artists, item),
                                         bg="#684680", fg="#FFFFFF")
@@ -130,8 +134,8 @@ class Play:
         self.year_button_ref = []
 
         # create four buttons for the year names in a grid
-        for item in range(0, 4):
-            self.year_button = Button(self.year_frame, font=("Arial", "11"),
+        for item in range(4):
+            self.year_button = Button(self.year_frame, font=("Arial", 11),
                                       text="Year Name", width=17,
                                       command=partial(self.round_results_year, item),
                                       bg="#684680", fg="#FFFFFF")
@@ -139,7 +143,7 @@ class Play:
             self.year_button_ref.append(self.year_button)
 
         # New label for year result feedback
-        self.year_result_label = Label(self.quiz_frame, text="", font=("Arial", "10"),
+        self.year_result_label = Label(self.quiz_frame, text="", font=("Arial", 10),
                                        bg="#FFF8C1", wraplength=300, justify="left")
         self.year_result_label.grid(row=7, pady=10, padx=10)
 
@@ -149,16 +153,17 @@ class Play:
 
         # list for buttons (frame | text | bg | command | width | row | column | fg)
         control_button_list = [
-            [self.quiz_frame, "Next Round", "#7FD188", self.new_round, 20, 9, None, "#000000"],
-            [self.hints_stats_frame, "Help", "#FFCD93", "", 9, 0, 0, "#000000"],
-            [self.hints_stats_frame, "Stats", "#96AEFF", "", 9, 0, 1, "#000000"],
-            [self.quiz_frame, "End Game", "#990000", self.close_play, 20, 10, None, "#FFFFFF"]
+            [self.quiz_frame, "Next Round", "#7FD188", self.new_round, 21, 7, None, "#000000"],
+            [self.hints_stats_frame, "Help", "#FFCD93", "", 10, 0, 0, "#000000"],
+            [self.hints_stats_frame, "Stats", "#96AEFF", "", 10, 0, 1, "#000000"],
+            [self.quiz_frame, "End Game", "#990000", self.close_play, 21, 9, None, "#FFFFFF"]
+
         ]
 
         control_ref_list = []
         for item in control_button_list:
             make_control_button = Button(item[0], text=item[1], bg=item[2],
-                                         command=item[3], font=("Arial", "16", "bold"),
+                                         command=item[3], font=("Arial", 16, "bold"),
                                          fg=item[7], width=item[4])
             make_control_button.grid(row=item[5], column=item[6], padx=5, pady=5)
             control_ref_list.append(make_control_button)
@@ -234,9 +239,6 @@ class Play:
         for button in self.artist_button_ref:
             button.config(state=DISABLED)
 
-        self.next_button.config(state=NORMAL)
-        self.stats_button.config(state=NORMAL)
-
         if self.rounds_played.get() == self.rounds_wanted.get():
             self.next_button.config(state=DISABLED, text="Game Over")
             self.end_game_button.config(text="Play Again", bg="#006600")
@@ -258,6 +260,9 @@ class Play:
         self.year_result_label.config(text=result_text, bg=result_bg)
         for button in self.year_button_ref:
             button.config(state=DISABLED)
+
+        self.next_button.config(state=NORMAL)
+        self.stats_button.config(state=NORMAL)
 
     def close_play(self):
         root.deiconify()
