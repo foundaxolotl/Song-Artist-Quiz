@@ -21,9 +21,10 @@ def get_round_artists():
     Choose four songs from the CSV ensuring the artists are all different.
     Returns a list of 4 items: [artist, song, year]
     """
-
+    # gets the artists/songs/years
     all_artist_list = get_songs()
 
+    # gets empty list for songs
     selected_songs = []
     artist_names = set()
 
@@ -68,11 +69,12 @@ class StartQuiz:
 
 class Play:
     """
-    Interface for playing the Colour Quest Game
+    Interface
     """
 
     def __init__(self, check_rounds):
-        
+
+        # set points to 0
         self.points_score = IntVar()
         self.points_score.set(0)
 
@@ -97,7 +99,7 @@ class Play:
         play_labels_list = [
             ["Round # of #", ("Arial", "16", "bold"), "#D2C4FF", 0],
             ["Which artist was the song below written by?", body_font, "#FFF2CC", 1],
-            ["                 Song Name                ", body_font, "#E1D5E7", 2],
+            ["                 Song Name                ", ("Arial", "14"), "#E1D5E7", 2],
             ["Which year was the song released?", ("Arial", "12"), "#FFF8C1", 4]
         ]
 
@@ -122,22 +124,41 @@ class Play:
         # create four buttons for the artist names in a 2 x 2 grid
         for item in range(0, 4):
             self.artist_button = Button(self.artist_frame, font=("Arial", "10"),
-                                        text="Artist Name", width=15, command=partial(self.round_results, item),
+                                        text="Artist Name", width=18, command=partial(self.round_results, item),
                                         bg="#684680", fg="#FFFFFF")
             self.artist_button.grid(row=item // 2, column=item % 2, padx=5, pady=5)
 
             self.artist_button_ref.append(self.artist_button)
 
+            # set up year buttons...
+            self.year_frame = Frame(self.quiz_frame)
+            self.year_frame.grid(row=6)
+            self.year_button_ref = []
+
+            # create four buttons for the year names in a grid
+            for item in range(4):
+                self.year_button = Button(self.year_frame, font=("Arial", 11),
+                                          text="Year Name", width=17,
+                                          command=partial(self.round_results, item),
+                                          bg="#684680", fg="#FFFFFF")
+                self.year_button.grid(row=item // 2, column=item % 2, padx=5, pady=5)
+                self.year_button_ref.append(self.year_button)
+
+            # New label for year result feedback
+            self.year_result_label = Label(self.quiz_frame, text="", font=("Arial", 10),
+                                           bg="#FFF8C1", wraplength=300, justify="left")
+            self.year_result_label.grid(row=7, pady=10, padx=10)
+
         # Frame to hold hints and stats buttons
         self.hints_stats_frame = Frame(self.quiz_frame)
-        self.hints_stats_frame.grid(row=6)
+        self.hints_stats_frame.grid(row=7)
 
         # list for buttons (frame | text | bg | command | width | row | column | fg)
         control_button_list = [
-            [self.quiz_frame, "Next Round", "#7FD188", self.new_round, 21, 7, None, "#000000"],
+            [self.quiz_frame, "Next Round", "#7FD188", self.new_round, 21, 8, None, "#000000"],
             [self.hints_stats_frame, "Help", "#FFCD93", "", 10, 0, 0, "#000000"],
             [self.hints_stats_frame, "Stats", "#96AEFF", "", 10, 0, 1, "#000000"],
-            [self.quiz_frame, "End Game", "#990000", self.close_play, 21, 9, None, "#FFFFFF"]
+            [self.quiz_frame, "End Game", "#990000", self.close_play, 21, 10, None, "#FFFFFF"]
 
         ]
 
@@ -159,6 +180,7 @@ class Play:
         background_list = [
             self.quiz_frame,
             self.artist_frame,
+            self.year_frame,
             self.hints_stats_frame,
 
         ]
