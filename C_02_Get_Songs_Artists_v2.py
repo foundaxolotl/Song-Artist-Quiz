@@ -2,19 +2,9 @@ import csv
 import random
 
 
-def round_ans(val):
-    """
-    Rounding the number
-    """
-    var_rounded = (val * 2 + 1) // 2
-    raw_rounded = "{:.0f}".format(var_rounded)
-    return int(raw_rounded)
-
-
 # Retrieve Songs from csv file and put them in a list
 file = open("00_pop_rock_songs.csv", "r")
 all_songs = list(csv.reader(file, delimiter=","))
-all_artists = list(csv.reader(file, delimiter=","))
 file.close()
 
 # remove the first row
