@@ -22,10 +22,12 @@ def get_round_artists():
     Returns a list of 4 items: [artist, song, year]
     """
 
+    # get artists/years/songs and set up empty lists
     all_artist_list = get_songs()
     selected_songs = []
     artist_names = set()
 
+    # select four random artists with a potential song
     while len(selected_songs) < 4:
         potential_song = random.choice(all_artist_list)
         artist = potential_song[0]
@@ -60,7 +62,7 @@ class StartQuiz:
         self.play_button.grid(row=0, column=1)
 
     def check_rounds(self):
-        Play(10)
+        Play(5)
         # hides root window
         root.withdraw()
 
@@ -72,6 +74,7 @@ class Play:
 
     def __init__(self, check_rounds):
 
+        # Set up default values
         self.points_score = IntVar(value=0)
         self.rounds_played = IntVar(value=0)
         self.rounds_wanted = IntVar(value=check_rounds)
@@ -128,7 +131,7 @@ class Play:
             self.artist_button.grid(row=item // 2, column=item % 2, padx=5, pady=5)
             self.artist_button_ref.append(self.artist_button)
 
-        # set up artist buttons...
+        # set up year buttons...
         self.year_frame = Frame(self.quiz_frame)
         self.year_frame.grid(row=6)
         self.year_button_ref = []
@@ -149,15 +152,14 @@ class Play:
 
         # Frame to hold hints and stats buttons
         self.hints_stats_frame = Frame(self.quiz_frame)
-        self.hints_stats_frame.grid(row=8)
+        self.hints_stats_frame.grid(row=9)
 
         # list for buttons (frame | text | bg | command | width | row | column | fg)
         control_button_list = [
-            [self.quiz_frame, "Next Round", "#7FD188", self.new_round, 21, 7, None, "#000000"],
+            [self.quiz_frame, "Next Round", "#7FD188", self.new_round, 21, 8, None, "#000000"],
             [self.hints_stats_frame, "Help", "#FFCD93", "", 10, 0, 0, "#000000"],
             [self.hints_stats_frame, "Stats", "#96AEFF", "", 10, 0, 1, "#000000"],
-            [self.quiz_frame, "End Game", "#990000", self.close_play, 21, 9, None, "#FFFFFF"]
-
+            [self.quiz_frame, "End Game", "#990000", self.close_play, 21, 10, None, "#FFFFFF"]
         ]
 
         control_ref_list = []
