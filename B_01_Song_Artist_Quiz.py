@@ -81,7 +81,6 @@ class StartQuiz:
                                fg=item[3],
                                wraplength=400, justify="left", pady=10, padx=20)
             make_label.grid(row=count)
-
             start_label_ref.append(make_label)
 
         # extract choice label so that it can be changed to an error message if necessary.
@@ -158,27 +157,23 @@ class Play:
         self.rounds_played = IntVar(value=0)
         self.rounds_wanted = IntVar(value=check_rounds)
 
-        self.all_songs = get_songs()
-        random.shuffle(self.all_songs)
-        self.selected_song = 0
+        self.play_box = Toplevel()
+        self.quiz_frame = Frame(self.play_box)
+        self.quiz_frame.grid(padx=10, pady=10)
 
         # Gets artist list and the correct artist
         self.round_artist_list = []
         self.correct_index = None
-
-        self.play_box = Toplevel()
-        self.quiz_frame = Frame(self.play_box)
-        self.quiz_frame.grid(padx=10, pady=10)
 
         # body for most of the labels
         body_font = ("Arial", "12")
 
         # list for labels details
         play_labels_list = [
-            ["Round # of #", ("Arial", "16", "bold"), "#D2C4FF", 0],
+            ["Round # of #", ("Arial", "15", "bold"), "#D2C4FF", 0],
             ["Which artist was the song below written by?", body_font, "#FFF2CC", 1],
-            ["                 Song Name                ", body_font, "#E1D5E7", 2],
-            ["", ("Arial", "10"), "#FFF8C1", 4],
+            ["", ("Arial", 13, "bold"), "#E1D5E7", 2],
+            ["", ("Arial", 10), "#FFF8C1", 4],
             ["Which year was the song released?", body_font, "#FFF2CC", 5],
         ]
 
@@ -277,7 +272,7 @@ class Play:
         rounds_wanted = self.rounds_wanted.get()
 
         # Update heading for Rounds heading
-        self.heading_label.config(text=f"Round {rounds_played} / {rounds_wanted}")
+        self.heading_label.config(text=f"Round {rounds_played} / {rounds_wanted}                Score: # ")
 
         # Retrieves round artists
         self.round_artist_list = get_round_artists()
@@ -320,12 +315,6 @@ class Play:
         for button in self.artist_button_ref:
             button.config(state=DISABLED)
 
-        if self.rounds_played.get() == self.rounds_wanted.get():
-            self.next_button.config(state=DISABLED, text="Game Over")
-            self.end_game_button.config(text="Play Again", bg="#006600")
-            for button in self.year_button_ref:
-                button.config(state=DISABLED)
-
     def round_results_year(self, user_choice):
         selected_year = self.year_button_ref[user_choice].cget('text')
         correct_year = self.round_artist_list[self.correct_index][2]
@@ -342,7 +331,13 @@ class Play:
         for button in self.year_button_ref:
             button.config(state=DISABLED)
 
-        self.next_button.config(state=NORMAL)
+        # Disabled/Normal buttons
+        if self.rounds_played.get() == self.rounds_wanted.get():
+            self.next_button.config(state=DISABLED, text="Game Over")
+            self.end_game_button.config(text="Play Again", bg="#006600")
+        else:
+            self.next_button.config(state=NORMAL)
+
         self.stats_button.config(state=NORMAL)
 
     def close_play(self):
