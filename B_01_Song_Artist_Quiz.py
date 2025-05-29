@@ -232,7 +232,7 @@ class Play:
         control_button_list = [
             [self.quiz_frame, "Next Round", "#7FD188", self.new_round, 21, 8, None, "#000000"],
             [self.hints_stats_frame, "Help", "#FFCD93", "", 10, 0, 0, "#000000"],
-            [self.hints_stats_frame, "Stats", "#96AEFF", "", 10, 0, 1, "#000000"],
+            [self.hints_stats_frame, "Results", "#96AEFF", "", 10, 0, 1, "#000000"],
             [self.quiz_frame, "End Game", "#990000", self.close_play, 21, 10, None, "#FFFFFF"]
         ]
 
