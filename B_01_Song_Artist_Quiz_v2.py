@@ -311,9 +311,9 @@ class Play:
         year_options = wrong_years + [correct_year]
         random.shuffle(year_options)
 
-        # Set year buttons with unique years
         for item in range(4):
-            self.year_button_ref[item].config(text=year_options[item], state=NORMAL)
+            self.artist_button_ref[item].config(text=self.round_artist_list[item][0], state=NORMAL)
+            self.year_button_ref[item].config(text=self.round_artist_list[item][2], state=DISABLED)
 
         # Reset result labels and disable next button
         self.results_label.config(text="", bg="#FFF8C1")
@@ -341,6 +341,10 @@ class Play:
 
         for button in self.artist_button_ref:
             button.config(state=DISABLED)
+
+        # Enable year buttons now
+        for button in self.year_button_ref:
+            button.config(state=NORMAL)
 
     def round_results_year(self, user_choice):
         selected_year = self.year_button_ref[user_choice].cget('text')
