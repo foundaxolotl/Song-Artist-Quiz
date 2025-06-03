@@ -224,15 +224,15 @@ class Play:
                                        bg="#FFF8C1", wraplength=300, justify="left")
         self.year_result_label.grid(row=7, pady=10, padx=10)
 
-        # Frame to hold hints and stats buttons
-        self.hints_stats_frame = Frame(self.quiz_frame)
-        self.hints_stats_frame.grid(row=9)
+        # Frame to hold hints and results buttons
+        self.hints_results_frame = Frame(self.quiz_frame)
+        self.hints_results_frame.grid(row=9)
 
         # list for buttons (frame | text | bg | command | width | row | column | fg)
         control_button_list = [
             [self.quiz_frame, "Next Round", "#7FD188", self.new_round, 21, 8, None, "#000000"],
-            [self.hints_stats_frame, "Help", "#FFCD93", "", 10, 0, 0, "#000000"],
-            [self.hints_stats_frame, "Results", "#96AEFF", "", 10, 0, 1, "#000000"],
+            [self.hints_results_frame, "Help", "#FFCD93", self.to_help, 10, 0, 0, "#000000"],
+            [self.hints_results_frame, "Results", "#96AEFF", "", 10, 0, 1, "#000000"],
             [self.quiz_frame, "End Game", "#990000", self.close_play, 21, 10, None, "#FFFFFF"]
         ]
 
@@ -244,9 +244,10 @@ class Play:
             make_control_button.grid(row=item[5], column=item[6], padx=5, pady=5)
             control_ref_list.append(make_control_button)
 
-        # Retrieve stats, next round and end game button
+        # Retrieve results, next round and end game button
         self.next_button = control_ref_list[0]
-        self.stats_button = control_ref_list[2]
+        self.help_button = control_ref_list[1]
+        self.results_button = control_ref_list[2]
         self.end_game_button = control_ref_list[3]
 
         # Create a list for the background colour
@@ -254,7 +255,7 @@ class Play:
             self.quiz_frame,
             self.artist_frame,
             self.year_frame,
-            self.hints_stats_frame
+            self.hints_results_frame
         ]
         for widget in background_list:
             widget.config(bg="#D2C4FF")
@@ -369,12 +370,91 @@ class Play:
         else:
             self.next_button.config(state=NORMAL)
 
-        self.stats_button.config(state=NORMAL)
+        self.results_button.config(state=NORMAL)
 
     def close_play(self):
+
+        # allow new quiz to start
         root.deiconify()
         self.play_box.destroy()
 
+    def to_help(self):
+        """
+        Displays hints for playing game
+        :return:
+        """
+        # check we have played at least one round so that
+        # stats button is not enabled in error.
+        rounds_played = self.rounds_played.get()
+        ShowHelp(self, rounds_played)
+
+
+class ShowHelp:
+    """
+    Displays help for Song/Artist Quiz
+    """
+
+    def __init__(self, partner, rounds_played):
+        self.rounds_played = rounds_played
+        
+        # setup dialogue box
+        background = "#ffe6cc"
+        self.help_box = Toplevel()
+
+        # disable help button
+        partner.help_button.config(state=DISABLED)
+        partner.end_game_button.config(state=DISABLED)
+        partner.results_button.config(state=DISABLED)
+
+        # if users press cross at top, close help and release help button
+        self.help_box.protocol('WM_DELETE_WINDOW',
+                               partial(self.close_help, partner))
+
+        self.help_frame = Frame(self.help_box, width=300,
+                                height=200)
+        self.help_frame.grid()
+
+        self.help_heading_label = Label(self.help_frame,
+                                        text="Help",
+                                        font=("Arial", 14, "bold"))
+        self.help_heading_label.grid(row=0)
+
+        help_text = ("In each round you will be asked to match the song title to the "
+                    "artist that wrote the song and the year the song was released. "
+                     "Guessing the correct artist will get you 3 points, and the correct "
+                     "year will get you 2 points.\n"
+                    "\n"
+                    "You must answer the artist question before the year, and must take "
+                     "a guess at each question before proceeding.")
+
+        self.help_text_label = Label(self.help_frame,
+                                     text=help_text, wraplength=350,
+                                     justify="left")
+        self.help_text_label.grid(row=1, padx=10)
+
+        self.dismiss_button = Button(self.help_frame,
+                                     font=("Arial", 12, "bold"),
+                                     text="Dismiss", bg="#FFCD93",
+                                     fg="#000000",
+                                     command=partial(self.close_help, partner))
+        self.dismiss_button.grid(row=2, padx=10, pady=10)
+
+        # list and loop to set background colour on everything
+        recolour_list = [self.help_frame, self.help_heading_label,
+                         self.help_text_label]
+
+        for item in recolour_list:
+            item.config(bg=background)
+
+    def close_help(self, partner):
+        """
+        Closes help dialogue box (and enables help button)
+        """
+        # put help button back to normal
+        partner.help_button.config(state=NORMAL)
+        partner.end_game_button.config(state=NORMAL)
+        
+        self.help_box.destroy()
 
 # main routine
 if __name__ == "__main__":
