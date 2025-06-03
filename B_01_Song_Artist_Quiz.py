@@ -42,7 +42,7 @@ def get_round_artists():
 class StartQuiz:
     """
 
-    Initial Game interface (ask users how many rounds of questions they
+    Initial Quiz interface (ask users how many rounds of questions they
     would like to play)
     """
 
@@ -224,15 +224,15 @@ class Play:
                                        bg="#FFF8C1", wraplength=300, justify="left")
         self.year_result_label.grid(row=7, pady=10, padx=10)
 
-        # Frame to hold hints and stats buttons
-        self.hints_stats_frame = Frame(self.quiz_frame)
-        self.hints_stats_frame.grid(row=9)
+        # Frame to hold help and stats buttons
+        self.help_stats_frame = Frame(self.quiz_frame)
+        self.help_stats_frame.grid(row=9)
 
         # list for buttons (frame | text | bg | command | width | row | column | fg)
         control_button_list = [
             [self.quiz_frame, "Next Round", "#7FD188", self.new_round, 21, 8, None, "#000000"],
-            [self.hints_stats_frame, "Help", "#FFCD93", "", 10, 0, 0, "#000000"],
-            [self.hints_stats_frame, "Results", "#96AEFF", "", 10, 0, 1, "#000000"],
+            [self.help_stats_frame, "Help", "#FFCD93", "", 10, 0, 0, "#000000"],
+            [self.help_stats_frame, "Results", "#96AEFF", "", 10, 0, 1, "#000000"],
             [self.quiz_frame, "End Game", "#990000", self.close_play, 21, 10, None, "#FFFFFF"]
         ]
 
@@ -254,7 +254,7 @@ class Play:
             self.quiz_frame,
             self.artist_frame,
             self.year_frame,
-            self.hints_stats_frame
+            self.help_stats_frame
         ]
         for widget in background_list:
             widget.config(bg="#D2C4FF")
@@ -287,18 +287,13 @@ class Play:
 
         for item in range(4):
             self.artist_button_ref[item].config(text=self.round_artist_list[item][0], state=NORMAL)
-            self.year_button_ref[item].config(text=self.round_artist_list[item][2], state=NORMAL)
+            self.year_button_ref[item].config(text=self.round_artist_list[item][2], state=DISABLED)
 
         self.results_label.config(text="", bg="#FFF8C1")
         self.year_result_label.config(text="", bg="#FFF8C1")
         self.next_button.config(state=DISABLED)
 
     def round_results_artists(self, user_choice):
-        """
-
-        Retrieves which button was pushed (index 0 - 3), retrieves
-        score from the first question and gives the correct artist
-        """
         selected_artist = self.artist_button_ref[user_choice].cget('text')
         correct_artist = self.round_artist_list[self.correct_index][0]
 
@@ -314,6 +309,10 @@ class Play:
 
         for button in self.artist_button_ref:
             button.config(state=DISABLED)
+
+        # Enable year buttons now
+        for button in self.year_button_ref:
+            button.config(state=NORMAL)
 
     def round_results_year(self, user_choice):
         selected_year = self.year_button_ref[user_choice].cget('text')
