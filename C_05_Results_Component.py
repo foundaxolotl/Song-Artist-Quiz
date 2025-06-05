@@ -49,12 +49,10 @@ class Play:
     """
 
     def __init__(self, how_many):
-        self.rounds_won = IntVar()
 
         # Random Score test Data....
         self.all_scores_list = [2, 5, 3, 5, 5]
         self.all_high_score_list = [5, 5, 5, 5, 5]
-        self.rounds_won.set(3)
 
         self.play_box = Toplevel()
 
@@ -74,8 +72,7 @@ class Play:
         """
         Retrieves everything we need to display the game / round statistics
         """
-        rounds_won = self.rounds_won.get()
-        results_bundle = [rounds_won, self.all_scores_list,
+        results_bundle = [self.all_scores_list,
                           self.all_high_score_list]
 
         Results(self, results_bundle)
@@ -88,9 +85,8 @@ class Results:
 
     def __init__(self, partner, all_results_info):
         # Extract information from master list...
-        rounds_won = all_results_info[0]
-        user_scores = all_results_info[1]
-        high_scores = all_results_info[2]
+        user_scores = all_results_info[0]
+        high_scores = all_results_info[1]
 
         # sort user scores to find high score...
         user_scores.sort()
@@ -106,8 +102,6 @@ class Results:
 
         # Math to populate results dialogue...
         rounds_played = len(user_scores)
-
-        success_rate = rounds_won / rounds_played * 100
         total_score = sum(user_scores)
         max_possible = sum(high_scores)
 
@@ -115,9 +109,6 @@ class Results:
         average_score = total_score / rounds_played
 
         # strings for results labels...
-
-        success_string = (f"Success Rate: {rounds_won} / {rounds_played}"
-                          f" ({success_rate:.0f}%)")
         total_score_string = f"Total Score: {total_score}"
         max_possible_string = f"Maximum Possible Score: {max_possible}"
         best_score_string = f"Best Score: {best_score}"
@@ -146,11 +137,10 @@ class Results:
         # Label list (text | font | sticky
         all_results_strings = [
             ["- Results -", heading_font, ""],
-            [success_string, normal_font, "W"],
             [total_score_string, normal_font, "W"],
             [max_possible_string, normal_font, "W"],
             [comment_string, comment_font, "W"],
-            ["\nRound results", heading_font, ""],
+            ["\nRound Results", heading_font, ""],
             [best_score_string, normal_font, "W"],
             [average_score_string, normal_font, "W"]
         ]
