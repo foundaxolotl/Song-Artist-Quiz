@@ -384,7 +384,6 @@ class Play:
         self.results_button.config(state=NORMAL)
 
     def close_play(self):
-
         # allow new quiz to start
         root.deiconify()
         self.play_box.destroy()
@@ -416,7 +415,7 @@ class ShowHelp:
 
     def __init__(self, partner, rounds_played):
         self.rounds_played = rounds_played
-        
+
         # setup dialogue box
         background = "#ffe6cc"
         self.help_box = Toplevel()
@@ -473,7 +472,7 @@ class ShowHelp:
         # put help button back to normal
         partner.help_button.config(state=NORMAL)
         partner.end_game_button.config(state=NORMAL)
-        
+
         self.help_box.destroy()
 
 
@@ -485,9 +484,9 @@ class Results:
     def __init__(self, partner, all_results_info):
 
         # disable buttons to prevent program crashing
-        partner.hints_button.config(state=DISABLED)
+        partner.help_button.config(state=DISABLED)
         partner.end_game_button.config(state=DISABLED)
-        partner.stats_button.config(state=DISABLED)
+        partner.results_button.config(state=DISABLED)
 
         # Extract information
         user_scores = all_results_info[0]
