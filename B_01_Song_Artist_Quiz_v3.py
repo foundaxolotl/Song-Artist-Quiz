@@ -483,11 +483,17 @@ class Results:
     """
 
     def __init__(self, partner, all_results_info):
-        # Extract information from master list...
+
+        # disable buttons to prevent program crashing
+        partner.hints_button.config(state=DISABLED)
+        partner.end_game_button.config(state=DISABLED)
+        partner.stats_button.config(state=DISABLED)
+
+        # Extract information
         user_scores = all_results_info[0]
         high_scores = all_results_info[1]
 
-        # sort user scores to find high score...
+        # sort user scores to find high score
         user_scores.sort()
 
         self.results_box = Toplevel()
@@ -499,11 +505,12 @@ class Results:
         self.results_frame = Frame(self.results_box, width=300)
         self.results_frame.grid()
 
-        # Math to populate results dialogue...
+        # math to populate results dialogue
         rounds_played = len(user_scores)
         total_score = sum(user_scores)
         max_possible = sum(high_scores)
 
+        # Gets average score
         best_score = user_scores[-1]
         average_score = total_score / rounds_played
 
@@ -512,7 +519,7 @@ class Results:
         max_possible_string = f"Maximum Possible Score: {max_possible}"
         best_score_string = f"Best Score: {best_score}"
 
-        # custom comment text and formatting
+        # comment text and formatting
         if total_score == max_possible:
             comment_string = ("Amazing! You got the highest"
                               "possible score!")
