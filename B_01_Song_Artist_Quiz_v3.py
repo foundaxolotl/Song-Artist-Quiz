@@ -261,6 +261,8 @@ class Play:
         self.results_button = control_ref_list[2]
         self.end_game_button = control_ref_list[3]
 
+        self.results_button.config(state=DISABLED)
+
         # Create a list for the background colour
         background_list = [
             self.quiz_frame,
@@ -316,16 +318,13 @@ class Play:
         if len(all_years) < 3:
             raise Exception("Not enough unique years in the song list to generate choices.")
 
-        # Pick 3 unique incorrect years
-        wrong_years = random.sample(all_years, 3)
-
         # Combine and shuffle the year options
+        wrong_years = random.sample(all_years, 3)
         year_options = wrong_years + [correct_year]
         random.shuffle(year_options)
 
         for item in range(4):
-            self.artist_button_ref[item].config(text=self.round_artist_list[item][0], state=NORMAL)
-            self.year_button_ref[item].config(text=self.round_artist_list[item][2], state=DISABLED)
+            self.year_button_ref[item].config(text=year_options[item], state=DISABLED)
 
         # Reset result labels and disable next button
         self.results_label.config(text="", bg="#FFF8C1")
@@ -374,6 +373,11 @@ class Play:
         for button in self.year_button_ref:
             button.config(state=DISABLED)
 
+        # Append score and high score for this round
+        round_score = self.points_score.get()
+        self.all_scores_list.append(round_score)
+        self.all_high_score_list.append(5)
+
         # Disabled/Normal buttons
         if self.rounds_played.get() == self.rounds_wanted.get():
             self.next_button.config(state=DISABLED, text="Game Over")
@@ -394,9 +398,7 @@ class Play:
         :return:
         """
         # check we have played at least one round so that
-        # stats button is not enabled in error.
-        rounds_played = self.rounds_played.get()
-        ShowHelp(self, rounds_played)
+        ShowHelp(self, self.rounds_played.get())
 
     def to_results(self):
         """
@@ -472,6 +474,7 @@ class ShowHelp:
         # put help button back to normal
         partner.help_button.config(state=NORMAL)
         partner.end_game_button.config(state=NORMAL)
+        partner.results_button.config(state=NORMAL)
 
         self.help_box.destroy()
 
@@ -492,12 +495,8 @@ class Results:
         user_scores = all_results_info[0]
         high_scores = all_results_info[1]
 
-        # sort user scores to find high score
-        user_scores.sort()
-
-        self.results_box = Toplevel()
-
         # if users press cross at top, close help and release help button
+        self.results_box = Toplevel()
         self.results_box.protocol('WM_DELETE_WINDOW',
                                   partial(self.close_results, partner))
 
@@ -510,17 +509,18 @@ class Results:
         max_possible = sum(high_scores)
 
         # Gets average score
-        best_score = user_scores[-1]
-        average_score = total_score / rounds_played
+        best_score = max(user_scores) if user_scores else 0
+        average_score = total_score / rounds_played if rounds_played > 0 else 0
 
         # strings for results labels...
         total_score_string = f"Total Score: {total_score}"
         max_possible_string = f"Maximum Possible Score: {max_possible}"
         best_score_string = f"Best Score: {best_score}"
+        average_score_string = f"Average Score: {average_score:.0f}\n"
 
         # comment text and formatting
         if total_score == max_possible:
-            comment_string = ("Amazing! You got the highest"
+            comment_string = ("Amazing! You got the highest \n"
                               "possible score!")
             comment_colour = "#96AEFF"
 
@@ -532,8 +532,6 @@ class Results:
         else:
             comment_string = ""
             comment_colour = "#96AEFF"
-
-        average_score_string = f"Average Score: {average_score:.0f}\n"
 
         heading_font = ("Arial", "16", "bold")
         normal_font = ("Arial", "14")
@@ -559,7 +557,7 @@ class Results:
             results_label_ref_list.append(self.results_label)
 
         # Configure comment label background (for all won / all lost)
-        results_comment_label = results_label_ref_list[4]
+        results_comment_label = results_label_ref_list[3]
         results_comment_label.config(bg=comment_colour)
 
         self.dismiss_button = Button(self.results_frame,
@@ -581,7 +579,7 @@ class Results:
 
     def close_results(self, partner):
         # put results button back to normal
-        partner.help_button_config(state=NORMAL)
+        partner.help_button.config(state=NORMAL)
         partner.end_game_button.config(state=NORMAL)
         partner.results_button.config(state=NORMAL)
         self.results_box.destroy()
