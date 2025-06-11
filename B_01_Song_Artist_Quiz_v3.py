@@ -52,10 +52,6 @@ class StartQuiz:
         Gets users input of number of rounds wanted
         """
 
-        # Random Score test Data....
-        self.all_scores_list = [2, 5, 3, 5, 5]
-        self.all_high_score_list = [5, 5, 5, 5, 5]
-
         self.start_frame = Frame(pady=10, padx=10)
         self.start_frame.grid()
 
@@ -173,8 +169,6 @@ class Play:
         # Score List
         self.all_scores_list = []
         self.all_high_score_list = []
-
-        self.play_box = Toplevel
 
         # body for most of the labels
         body_font = ("Arial", "12")
@@ -388,7 +382,7 @@ class Play:
         self.results_button.config(state=NORMAL)
 
     def close_play(self):
-        # allow new quiz to start
+        # game / allow new game to start
         root.deiconify()
         self.play_box.destroy()
 
@@ -505,46 +499,44 @@ class Results:
 
         # math to populate results dialogue
         rounds_played = len(user_scores)
-        total_score = sum(user_scores)
         max_possible = sum(high_scores)
 
         # Gets average score
-        best_score = max(user_scores) if user_scores else 0
+        total_score = max(user_scores) if user_scores else 0
         average_score = total_score / rounds_played if rounds_played > 0 else 0
 
         # strings for results labels...
         total_score_string = f"Total Score: {total_score}"
         max_possible_string = f"Maximum Possible Score: {max_possible}"
-        best_score_string = f"Best Score: {best_score}"
-        average_score_string = f"Average Score: {average_score:.0f}\n"
+        average_score_string = f"Average Score (per round): {average_score:.0f}\n"
 
         # comment text and formatting
         if total_score == max_possible:
-            comment_string = ("Amazing! You got the highest \n"
-                              "possible score!")
+            comment_string = (" ~ Amazing! You got the highest \n"
+                              "possible score! ~")
             comment_colour = "#96AEFF"
+            comment_background = "#BDCDFF"
 
         elif total_score == 0:
-            comment_string = ("Oops - You've lost every round! "
-                              "You might want to look at the hints!")
+            comment_string = ("~ Oops - You've lost every round! "
+                              "Keep Trying! ~")
             comment_colour = "#96AEFF"
-            best_score_string = f"Best Score: n/a"
+            comment_background = "#BDCDFF"
         else:
             comment_string = ""
             comment_colour = "#96AEFF"
+            comment_background = "#BDCDFF"
 
         heading_font = ("Arial", "16", "bold")
         normal_font = ("Arial", "14")
-        comment_font = ("Arial", "13")
+        comment_font = ("Georgia", "13")
 
-        # Label list (text | font | sticky
+        # Label list (text | font | sticky)
         all_results_strings = [
-            ["- Results -", heading_font, ""],
+            ["~~ Results of Quiz ~~", heading_font, ""],
             [total_score_string, normal_font, "W"],
             [max_possible_string, normal_font, "W"],
             [comment_string, comment_font, "W"],
-            ["\nRound Results", heading_font, ""],
-            [best_score_string, normal_font, "W"],
             [average_score_string, normal_font, "W"]
         ]
 
@@ -559,6 +551,7 @@ class Results:
         # Configure comment label background (for all won / all lost)
         results_comment_label = results_label_ref_list[3]
         results_comment_label.config(bg=comment_colour)
+        results_comment_label.config(bg=comment_background)
 
         self.dismiss_button = Button(self.results_frame,
                                      font=("Arial", 16, "bold"),
@@ -583,6 +576,7 @@ class Results:
         partner.end_game_button.config(state=NORMAL)
         partner.results_button.config(state=NORMAL)
         self.results_box.destroy()
+
 
 
 # main routine
