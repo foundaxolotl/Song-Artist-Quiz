@@ -166,9 +166,10 @@ class Play:
         self.round_artist_list = []
         self.correct_index = None
 
-        # Score List
+        # Score List / score tracker
         self.all_scores_list = []
         self.all_high_score_list = []
+        self.round_score = 0
 
         # body for most of the labels
         body_font = ("Arial", "12")
@@ -279,6 +280,9 @@ class Play:
         self.rounds_played.set(rounds_played)
         rounds_wanted = self.rounds_wanted.get()
 
+        # Resets score for a new round
+        self.round_score = 0
+
         # Update heading for Rounds heading
         self.heading_label.config(
             text=f"Round {rounds_played} / {rounds_wanted}    Score: {self.points_score.get()}"
@@ -313,8 +317,13 @@ class Play:
             raise Exception("Not enough unique years in the song list to generate choices.")
 
         # Combine and shuffle the year options
-        wrong_years = random.sample(all_years, 3)
+        if len(all_years) >= 3:
+            wrong_years = random.sample(all_years, 3)
+        else:
+            wrong_years = random.choices(all_years, k=3)
+
         year_options = wrong_years + [correct_year]
+        # shuffles years for buttons
         random.shuffle(year_options)
 
         for item in range(4):
@@ -335,6 +344,7 @@ class Play:
         correct_artist = self.round_artist_list[self.correct_index][0]
 
         if user_choice == self.correct_index:
+            self.round_score += 3
             self.points_score.set(self.points_score.get() + 3)
             result_text = f"Correct! {selected_artist} wrote the song. (+3 points)"
             result_bg = "#86D68C"
@@ -344,6 +354,7 @@ class Play:
 
         self.results_label.config(text=result_text, bg=result_bg)
 
+        # Disable artist buttons after question has been answered
         for button in self.artist_button_ref:
             button.config(state=DISABLED)
 
@@ -356,6 +367,7 @@ class Play:
         correct_year = self.round_artist_list[self.correct_index][2]
 
         if selected_year == correct_year:
+            self.round_score += 2
             self.points_score.set(self.points_score.get() + 2)
             result_text = f"Correct! The song was released in {correct_year}. (+2 points)"
             result_bg = "#86D68C"
@@ -368,8 +380,7 @@ class Play:
             button.config(state=DISABLED)
 
         # Append score and high score for this round
-        round_score = self.points_score.get()
-        self.all_scores_list.append(round_score)
+        self.all_scores_list.append(self.round_score)
         self.all_high_score_list.append(5)
 
         # Disabled/Normal buttons
@@ -502,7 +513,7 @@ class Results:
         max_possible = sum(high_scores)
 
         # Gets average score
-        total_score = max(user_scores) if user_scores else 0
+        total_score = sum(user_scores)
         average_score = total_score / rounds_played if rounds_played > 0 else 0
 
         # strings for results labels...
