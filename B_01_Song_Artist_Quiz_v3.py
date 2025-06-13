@@ -517,8 +517,8 @@ class Results:
         average_score = total_score / rounds_played if rounds_played > 0 else 0
 
         # strings for results labels...
-        total_score_string = f"Total Score: {total_score}"
-        max_possible_string = f"Maximum Possible Score: {max_possible}"
+        total_score_string = f"Total Points: {total_score}"
+        max_possible_string = f"Maximum Possible Points: {max_possible}"
         average_score_string = f"Average Score (per round): {average_score:.0f}\n"
 
         # comment text and formatting
