@@ -176,7 +176,7 @@ class Play:
 
         # list for labels details
         play_labels_list = [
-            ["Round # of #", ("Arial", "15", "bold"), "#D2C4FF", 0],
+            ["Round # of #     Score:", ("Arial", "15", "bold"), "#D2C4FF", 0],
             ["Which artist was the song below written by?", body_font, "#FFF2CC", 1],
             ["", ("Arial", 13, "bold"), "#E1D5E7", 2],
             ["", ("Arial", 10), "#FFF8C1", 4],
@@ -283,11 +283,6 @@ class Play:
         # Resets score for a new round
         self.round_score = 0
 
-        # Update heading for Rounds heading
-        self.heading_label.config(
-            text=f"Round {rounds_played} / {rounds_wanted}    Score: {self.points_score.get()}"
-        )
-
         # Retrieves round artists
         self.round_artist_list = get_round_artists()
 
@@ -334,6 +329,11 @@ class Play:
         self.year_result_label.config(text="", bg="#FFF8C1")
         self.next_button.config(state=DISABLED)
 
+    def score_title_heading(self):
+        self.heading_label.config(
+            text=f"Round {self.rounds_played.get()} / {self.rounds_wanted.get()}    Score: {self.points_score.get()}"
+        )
+
     def round_results_artists(self, user_choice):
         """
 
@@ -353,6 +353,7 @@ class Play:
             result_bg = "#FF6666"
 
         self.results_label.config(text=result_text, bg=result_bg)
+        self.score_title_heading()
 
         # Disable artist buttons after question has been answered
         for button in self.artist_button_ref:
@@ -376,6 +377,8 @@ class Play:
             result_bg = "#FF6666"
 
         self.year_result_label.config(text=result_text, bg=result_bg)
+        self.score_title_heading()
+
         for button in self.year_button_ref:
             button.config(state=DISABLED)
 
