@@ -228,7 +228,7 @@ class Play:
             self.year_button.grid(row=item // 2, column=item % 2, padx=5, pady=5)
             self.year_button_ref.append(self.year_button)
 
-        # New label for year result feedback
+        # label for year result feedback
         self.year_result_label = Label(self.quiz_frame, text="", font=("Arial", 10),
                                        bg="#FFF8C1", wraplength=300, justify="left")
         self.year_result_label.grid(row=7, pady=10, padx=10)
@@ -286,8 +286,8 @@ class Play:
         self.round_score = 0
 
         # Reset button colors
-        for btn in self.artist_button_ref + self.year_button_ref:
-            btn.config(bg="#684680")
+        for button in self.artist_button_ref + self.year_button_ref:
+            button.config(bg="#684680")
 
         # Retrieves round artists
         self.round_artist_list = get_round_artists()
@@ -340,17 +340,25 @@ class Play:
         )
 
     def round_results_artists(self, user_choice):
+        """
+
+        Retrieves which artist button was pushed (index 0 - 3), retrieves
+        score from the first question and gives the correct artist
+        """
         selected_artist = self.artist_button_ref[user_choice].cget('text')
         correct_artist = self.round_artist_list[self.correct_index][0]
 
+        # Disable artist buttons after question has been answered
         for item, button in enumerate(self.artist_button_ref):
             button.config(state=DISABLED)
 
+        # Make correct artist green / incorrect artist red
             if self.round_artist_list[item][0] == correct_artist:
                 button.config(bg="#7FD188")
             elif item == user_choice:
                 button.config(bg="#FF6666")
 
+        # Show results messages after question has been answered
         if user_choice == self.correct_index:
             self.round_score += 3
             self.points_score.set(self.points_score.get() + 3)
@@ -360,6 +368,7 @@ class Play:
             result_text = f"Wrong! {selected_artist} didn't write it.\nCorrect: {correct_artist}"
             result_bg = "#FF6666"
 
+        # Get results label and get score title heading (to display artist score)
         self.results_label.config(text=result_text, bg=result_bg)
         self.score_title_heading()
 
@@ -368,16 +377,26 @@ class Play:
             button.config(state=NORMAL)
 
     def round_results_year(self, user_choice):
+        """
+
+        Retrieves which year button was pushed (index 0 - 3), retrieves
+        score from the second question and gives the correct year
+        """
         selected_year = self.year_button_ref[user_choice].cget('text')
         correct_year = self.round_artist_list[self.correct_index][2]
 
-        for button in self.year_button_ref:
+        # Disable year buttons after question has been answered
+        for item, button in enumerate(self.year_button_ref):
             button.config(state=DISABLED)
+
+        # Make correct artist green / incorrect artist red
+        for button in self.year_button_ref:
             if button.cget('text') == correct_year:
                 button.config(bg="#7FD188")
             elif button.cget('text') == selected_year:
                 button.config(bg="#FF6666")
 
+        # Show results messages after question has been answered
         if selected_year == correct_year:
             self.round_score += 2
             self.points_score.set(self.points_score.get() + 2)
@@ -387,12 +406,15 @@ class Play:
             result_text = f"Wrong year! You chose {selected_year}.\nCorrect: {correct_year}"
             result_bg = "#FF6666"
 
+        # Get results label and get score title heading (to display year score)
         self.year_result_label.config(text=result_text, bg=result_bg)
         self.score_title_heading()
 
+        # Append score and high score for this round
         self.all_scores_list.append(self.round_score)
         self.all_high_score_list.append(5)
 
+        # Disabled/Normal button
         if self.rounds_played.get() == self.rounds_wanted.get():
             self.next_button.config(state=DISABLED, text="Game Over")
             self.end_game_button.config(text="Play Again", bg="#006600")
