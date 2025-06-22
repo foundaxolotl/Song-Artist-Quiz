@@ -366,6 +366,7 @@ class Play:
             self.points_score.set(self.points_score.get() + 2)
             result_text = f"Correct! {selected_artist} wrote the song. (+2 points)"
             result_bg = "#86D68C"
+
         else:
             result_text = f"Wrong! {selected_artist} didn't write it.\nCorrect: {correct_artist}"
             result_bg = "#FF6666"
