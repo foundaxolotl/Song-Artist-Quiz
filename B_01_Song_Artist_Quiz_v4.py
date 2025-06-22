@@ -242,7 +242,7 @@ class Play:
             [self.quiz_frame, "Next Round", "#7FD188", self.new_round, 21, 8, None, "#000000"],
             [self.hints_results_frame, "Help", "#FFCD93", self.to_help, 10, 0, 0, "#000000"],
             [self.hints_results_frame, "Results", "#96AEFF", self.to_results, 10, 0, 1, "#000000"],
-            [self.quiz_frame, "End Game", "#990000", self.close_play, 21, 10, None, "#FFFFFF"]
+            [self.quiz_frame, "End Quiz", "#990000", self.close_play, 21, 10, None, "#FFFFFF"]
         ]
 
         control_ref_list = []
@@ -253,7 +253,7 @@ class Play:
             make_control_button.grid(row=item[5], column=item[6], padx=5, pady=5)
             control_ref_list.append(make_control_button)
 
-        # Retrieve results, next round and end game button
+        # Retrieve results, next round and end quiz button
         self.next_button = control_ref_list[0]
         self.help_button = control_ref_list[1]
         self.results_button = control_ref_list[2]
@@ -334,6 +334,8 @@ class Play:
         self.year_result_label.config(text="", bg="#FFF8C1")
         self.next_button.config(state=DISABLED)
 
+        self.score_title_heading()
+
     def score_title_heading(self):
         self.heading_label.config(
             text=f"Round {self.rounds_played.get()} / {self.rounds_wanted.get()}    Score: {self.points_score.get()}"
@@ -360,9 +362,9 @@ class Play:
 
         # Show results messages after question has been answered
         if user_choice == self.correct_index:
-            self.round_score += 3
-            self.points_score.set(self.points_score.get() + 3)
-            result_text = f"Correct! {selected_artist} wrote the song. (+3 points)"
+            self.round_score += 2
+            self.points_score.set(self.points_score.get() + 2)
+            result_text = f"Correct! {selected_artist} wrote the song. (+2 points)"
             result_bg = "#86D68C"
         else:
             result_text = f"Wrong! {selected_artist} didn't write it.\nCorrect: {correct_artist}"
@@ -398,9 +400,9 @@ class Play:
 
         # Show results messages after question has been answered
         if selected_year == correct_year:
-            self.round_score += 2
-            self.points_score.set(self.points_score.get() + 2)
-            result_text = f"Correct! The song was released in {correct_year}. (+2 points)"
+            self.round_score += 3
+            self.points_score.set(self.points_score.get() + 3)
+            result_text = f"Correct! The song was released in {correct_year}. (+3 points)"
             result_bg = "#86D68C"
         else:
             result_text = f"Wrong year! You chose {selected_year}.\nCorrect: {correct_year}"
@@ -565,7 +567,7 @@ class Results:
             comment_colour = "#96AEFF"
             comment_background = "#BDCDFF"
         else:
-            comment_string = ""
+            comment_string = "  ===================== "
             comment_colour = "#96AEFF"
             comment_background = "#BDCDFF"
 
