@@ -52,6 +52,7 @@ class StartQuiz:
         Gets users input of number of rounds wanted
         """
 
+        # set up start frame
         self.start_frame = Frame(pady=10, padx=10)
         self.start_frame.grid()
 
@@ -101,26 +102,28 @@ class StartQuiz:
         self.play_button.grid(row=1, column=0)
 
         # Create a list for the background colour
-        background_list = [
+        recolour_list = [
             self.start_frame,
             self.entry_area_frame
         ]
 
-        for widget in background_list:
-            widget.config(bg="#D2C4FF")
+        for item in recolour_list:
+            item.config(bg="#D2C4FF")
 
 
     def check_rounds(self):
         """
         Checks user has entered 1 or more rounds
         """
-
+        # get rounds wanted from user
         rounds_wanted = self.num_rounds_entry.get()
 
         # reset label and entry box (for when users come back to home screen)
-        self.choose_label.config(fg="#009900", font=("Arial", "12", "bold"))
+        self.choose_label.config(fg="#000000", font=("Arial", "12", "bold"), text="How many rounds of questions do you want to play?")
         self.num_rounds_entry.config(bg="#FFFFFF")
 
+
+        # error message
         error = "Oops - Please choose a whole number more that zero."
         has_errors = "no"
 
@@ -158,6 +161,7 @@ class Play:
         self.rounds_played = IntVar(value=0)
         self.rounds_wanted = IntVar(value=check_rounds)
 
+        # set up main quiz frame
         self.play_box = Toplevel()
         self.quiz_frame = Frame(self.play_box)
         self.quiz_frame.grid(padx=10, pady=10)
@@ -183,6 +187,7 @@ class Play:
             ["Which year was the song released?", body_font, "#FFF2CC", 5],
         ]
 
+        # info for play labels
         self.play_labels_ref = []
         for item in play_labels_list:
             self.make_label = Label(self.quiz_frame, text=item[0], font=item[1],
@@ -245,6 +250,7 @@ class Play:
             [self.quiz_frame, "End Quiz", "#990000", self.close_play, 21, 10, None, "#FFFFFF"]
         ]
 
+        # info for items in button list
         control_ref_list = []
         for item in control_button_list:
             make_control_button = Button(item[0], text=item[1], bg=item[2],
@@ -262,20 +268,21 @@ class Play:
         self.results_button.config(state=DISABLED)
 
         # Create a list for the background colour
-        background_list = [
+        recolour_list = [
             self.quiz_frame,
             self.artist_frame,
             self.year_frame,
             self.hints_results_frame
         ]
-        for widget in background_list:
-            widget.config(bg="#D2C4FF")
+        # recolours background
+        for item in recolour_list:
+            item.config(bg="#D2C4FF")
 
         self.new_round()
 
     def new_round(self):
         """
-        Gets four random artists and unique years for each round
+        Gets four random artists and unique years for each round (no duplicates)
         """
 
         # Get number of rounds played by user
@@ -323,6 +330,7 @@ class Play:
         else:
             wrong_years = random.choices(all_years, k=3)
         year_options = wrong_years + [correct_year]
+
         # shuffles years for buttons
         random.shuffle(year_options)
 
@@ -337,6 +345,9 @@ class Play:
         self.score_title_heading()
 
     def score_title_heading(self):
+        """
+        Set up heading so rounds and score can be in the same line
+        """
         self.heading_label.config(
             text=f"Round {self.rounds_played.get()} / {self.rounds_wanted.get()}    Score: {self.points_score.get()}"
         )
@@ -424,16 +435,17 @@ class Play:
         else:
             self.next_button.config(state=NORMAL)
 
+        # makes results button normal
         self.results_button.config(state=NORMAL)
 
     def close_play(self):
-        # game / allow new game to start
+        # game / allow new quiz rounds to start
         root.deiconify()
         self.play_box.destroy()
 
     def to_help(self):
         """
-        Displays hints for playing game
+        Displays help window for quiz
         :return:
         """
         # check we have played at least one round so that
@@ -455,6 +467,8 @@ class ShowHelp:
     """
 
     def __init__(self, partner, rounds_played):
+
+        # get rounds played by user
         self.rounds_played = rounds_played
 
         # setup dialogue box
@@ -470,28 +484,32 @@ class ShowHelp:
         self.help_box.protocol('WM_DELETE_WINDOW',
                                partial(self.close_help, partner))
 
+        # set up help frame and heading label
         self.help_frame = Frame(self.help_box, width=300,
                                 height=200)
         self.help_frame.grid()
-
         self.help_heading_label = Label(self.help_frame,
-                                        text="- Help -",
+                                        text="~~ Help ~~",
                                         font=("Arial", 14, "bold"))
         self.help_heading_label.grid(row=0)
 
+        # help text to display
         help_text = ("In each round you will be asked to match the song title to the "
                     "artist that wrote the song and the year the song was released. "
-                     "Guessing the correct artist will get you 3 points, and the correct "
-                     "year will get you 2 points.\n"
+                     "Guessing the correct artist will get you 2 points, and the correct "
+                     "year will get you 3 points.\n"
                     "\n"
                     "You must answer the artist question before the year, and must take "
-                     "a guess at each question before proceeding.")
-
+                     "a guess at each question before proceeding.\n"
+                     "\n"
+                     "                                             Good Luck!")
+        # information for text label
         self.help_text_label = Label(self.help_frame,
                                      text=help_text, wraplength=350,
                                      justify="left")
         self.help_text_label.grid(row=1, padx=10)
 
+        # set up dismiss button
         self.dismiss_button = Button(self.help_frame,
                                      font=("Arial", 12, "bold"),
                                      text="Dismiss", bg="#FFCD93",
@@ -503,6 +521,7 @@ class ShowHelp:
         recolour_list = [self.help_frame, self.help_heading_label,
                          self.help_text_label]
 
+        # recolours background
         for item in recolour_list:
             item.config(bg=background)
 
@@ -572,6 +591,7 @@ class Results:
             comment_colour = "#96AEFF"
             comment_background = "#BDCDFF"
 
+        # fonts for comments
         heading_font = ("Arial", "16", "bold")
         normal_font = ("Arial", "14")
         comment_font = ("Georgia", "13")
@@ -585,6 +605,7 @@ class Results:
             [average_score_string, normal_font, "W"]
         ]
 
+        # info for result labels
         results_label_ref_list = []
         for count, item in enumerate(all_results_strings):
             self.results_label = Label(self.results_frame, text=item[0], font=item[1],
@@ -598,6 +619,7 @@ class Results:
         results_comment_label.config(bg=comment_colour)
         results_comment_label.config(bg=comment_background)
 
+        # get dismiss button for the results window
         self.dismiss_button = Button(self.results_frame,
                                      font=("Arial", 16, "bold"),
                                      text="Dismiss", bg="#333333",
@@ -616,12 +638,11 @@ class Results:
             widget.config(bg="#96AEFF")
 
     def close_results(self, partner):
-        # put results button back to normal
+        # put buttons back to normal / destroy results window when closed
         partner.help_button.config(state=NORMAL)
         partner.end_game_button.config(state=NORMAL)
         partner.results_button.config(state=NORMAL)
         self.results_box.destroy()
-
 
 
 # main routine
